@@ -41,6 +41,12 @@ let score = 0;
 // Init time
 let time = 10;
 
+// Set difficulty to value on localStoage or medium
+let difficulty = localStorage.getItem('difficulty') !== null ? localStorage.getItem('difficulty') : 'medium';
+
+// Set difficulty select value
+difficultySelect.value = localStorage.getItem('difficulty') !== null ? localStorage.getItem('difficulty') : 'medium';
+
 // Focus on text on start
 text.focus();
 
@@ -79,7 +85,7 @@ function updateTime() {
 // Game over, show end screen
 function gameOver() {
     endgameEl.innerHTML = `
-    <h1>TIme ran out</h1>
+    <h1>Time ran out</h1>
     <p>Your final score is ${score}</p>
     <button onclick="location.reload()">Reload</button>
     `;
@@ -90,6 +96,7 @@ function gameOver() {
 addWordToDOM();
 
 // Event listeners
+// typing
 text.addEventListener('input', e => {
     const insertedText = e.target.value;
 
@@ -100,9 +107,23 @@ text.addEventListener('input', e => {
         // Clear
         e.target.value = '';
 
-        time += 5;
+        if(difficulty === 'hard') {
+            time += 1;
+        } else if(difficulty === 'medium'){
+            time += 3;
+        } else {
+            time += 5;
+        }
 
         updateTime();
     }
 });
 
+// Settings btn click
+settingsBtn.addEventListener('click', () => settings.classList.toggle('hide'));
+
+// Settings select
+settingsForm.addEventListener('change', e => {
+    difficulty = e.target.value;
+    localStorage.setItem('difficulty', difficulty);
+})
